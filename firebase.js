@@ -33,7 +33,7 @@ export const updateVidrio = async ({ id, data, action }) => {
 
   try {
     await updateDoc(docRef, data);
-    alert("Los cambios han sido guardados");
+    // alert("Los cambios han sido guardados");
     action();
   } catch (err) {
     console.error("Error al actualizar el documento:", err);
@@ -65,7 +65,7 @@ export const createVidrio = async ({ data, action }) => {
 
   try {
     const newDocRef = await addDoc(colRef, data);
-    alert("Se agregó un nuevo tipo de vidrio al sistema");
+    // alert("Se agregó un nuevo tipo de vidrio al sistema");
     action();
     // return newDocRef.id; // Devuelve el ID del nuevo documento creado
   } catch (error) {

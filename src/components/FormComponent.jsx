@@ -15,12 +15,15 @@ import Select from "react-select";
 import { getVidrios } from "../../firebase";
 import { AddIcon, EditIcon } from "@chakra-ui/icons";
 import EditModal from "./EditModal";
+import AlertDialog from "./AlertDialog";
+import { useCustomAlert } from "@/hooks/useAlert";
 
 const FormComponent = () => {
   const [sizes, setSizes] = useState({ height: 0, width: 0 });
   const [options, setOptions] = useState();
   const [selected, setSelected] = useState();
   const [isOpen, open] = useState();
+  const { showAlert, alertConfig, isOpenAlert } = useCustomAlert();
 
   const cleanForm = () => {
     setSizes({ height: 0, width: 0 });
@@ -41,10 +44,20 @@ const FormComponent = () => {
 
   const getTotal = () => {
     if (selected?.price && sizes.height && sizes.width) {
-      return (selected?.price * sizes.height * sizes.width) / 10000;
+      const total = (selected.price * sizes.height * sizes.width) / 10000;
+      const formattedTotal = new Intl.NumberFormat("es-AR", {
+        style: "decimal",
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+        useGrouping: true,
+      })
+        .format(total)
+        .toString();
+
+      return formattedTotal;
     }
 
-    return 0;
+    return "0,00";
   };
 
   const handleChange = (e) => {
@@ -57,6 +70,8 @@ const FormComponent = () => {
     getVidrios().then((data) => setOptions(formatOptions(data)));
 
     newData && setSelected(newData);
+
+    showAlert();
   };
 
   useEffect(() => {
@@ -90,6 +105,8 @@ const FormComponent = () => {
               className="w-full focus:outline-none focus:border-blue-500"
               options={options}
               value={selected}
+              noOptionsMessage={() => "Cargando..."}
+              maxMenuHeight={210}
               onChange={getSelectValue}
               key="vidrios"
               borderColor="red"
@@ -162,12 +179,7 @@ const FormComponent = () => {
             <InputLeftAddon bg="transparent" px="3" py="2">
               <Box h="100%">$</Box>
             </InputLeftAddon>
-            <Input
-              value={getTotal()}
-              readOnly={true}
-              type="number"
-              placeholder="Total"
-            />
+            <Input value={getTotal()} readOnly={true} placeholder="Total" />
           </InputGroup>
         </Box>
       </Flex>
@@ -200,6 +212,8 @@ const FormComponent = () => {
         item={selected}
         handleSuccess={handleSuccess}
       />
+
+      <AlertDialog isOpen={isOpenAlert} {...alertConfig} />
     </Flex>
   );
 };

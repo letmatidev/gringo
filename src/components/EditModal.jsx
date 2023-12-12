@@ -97,17 +97,28 @@ const EditModal = ({ isOpen, open, item, handleSuccess }) => {
         </ModalBody>
 
         <ModalFooter>
-          <Flex gap={2} width={"100%"}>
+          <Flex
+            gap={2}
+            justifyContent={!item ? "flex-end" : "unset"}
+            width={"100%"}
+          >
+            {item && (
+              <Button
+                isDisabled={true}
+                mr={"auto"}
+                colorScheme={"red"}
+                variant="outline"
+                onClick={() => open(false)}
+              >
+                Eliminar
+              </Button>
+            )}
+
             <Button
-              isDisabled={true}
-              mr={"auto"}
-              colorScheme={"red"}
+              opacity={0.85}
               variant="outline"
               onClick={() => open(false)}
             >
-              Eliminar
-            </Button>
-            <Button opacity={0.85} variant="outline" onClick={() => open(false)}>
               Cancelar
             </Button>
             <Button
